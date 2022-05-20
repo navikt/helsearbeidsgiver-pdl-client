@@ -14,9 +14,7 @@ class PdlClientImplTest {
         val name = response
             ?.navn
             ?.firstOrNull()
-        //assertThat(name?.fornavn).isEqualTo("Ola")
         assertEquals("Ola", name?.fornavn)
-        //assertThat(name?.metadata?.master).isEqualTo("Freg")
         assertEquals("Freg", name?.metadata?.master)
     }
 
@@ -28,26 +26,13 @@ class PdlClientImplTest {
             ?.navn
             ?.firstOrNull()
             ?.fornavn
-
         assertEquals("NILS", name)
-        // TODO - assertThat(name).isEqualTo("NILS")
-        //assertThat(response?.hentIdenter?.identer).hasSize(2)
         assertEquals(2, response?.hentIdenter?.identer?.size)
-        // TODO - assertThat(response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.AKTORID }).hasSize(1)
         assertEquals(1, response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.AKTORID }?.size)
-        // TODO - assertThat(response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.FOLKEREGISTERIDENT }).hasSize(1)
         assertEquals(1, response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.FOLKEREGISTERIDENT }?.size)
-
-        //assertThat(response?.hentGeografiskTilknytning?.gtType).isEqualTo(PdlHentFullPerson.PdlGeografiskTilknytning.PdlGtType.KOMMUNE)
         assertEquals(PdlHentFullPerson.PdlGeografiskTilknytning.PdlGtType.KOMMUNE, response?.hentGeografiskTilknytning?.gtType)
-
-        //assertThat(response?.hentPerson?.foedsel?.firstOrNull()?.foedselsdato).isEqualTo(LocalDate.of(1984, 1, 31))
         assertEquals(LocalDate.of(1984, 1, 31), response?.hentPerson?.foedsel?.firstOrNull()?.foedselsdato)
-
-        //assertThat(response?.hentPerson?.doedsfall).hasSize(0)
         assertEquals(0, response?.hentPerson?.doedsfall?.size)
-
-        //assertThat(response?.hentPerson?.kjoenn?.firstOrNull()?.kjoenn).isEqualTo("MANN")
         assertEquals("MANN", response?.hentPerson?.kjoenn?.firstOrNull()?.kjoenn)
     }
 
