@@ -20,7 +20,11 @@ data class PdlHentPersonNavn(val hentPerson: PdlPersonNavneliste?) {
  * Tilsvarer graphql-spørringen hentFullPerson.graphql
  */
 @Serializable
-data class PdlHentFullPerson(val hentPerson: PdlFullPersonliste?, val hentIdenter: PdlIdentResponse?, val hentGeografiskTilknytning: PdlGeografiskTilknytning?) {
+data class PdlHentFullPerson(
+    val hentPerson: PdlFullPersonliste?,
+    val hentIdenter: PdlIdentResponse?,
+    val hentGeografiskTilknytning: PdlGeografiskTilknytning?
+) {
 
     @Serializable
     data class PdlIdentResponse(val identer: List<PdlIdent>) {
@@ -37,6 +41,7 @@ data class PdlHentFullPerson(val hentPerson: PdlFullPersonliste?, val hentIdente
                 PdlGtType.UDEFINERT -> null
             }
         }
+
         enum class PdlGtType { KOMMUNE, BYDEL, UTLAND, UDEFINERT }
     }
 
@@ -78,18 +83,22 @@ data class PdlHentFullPerson(val hentPerson: PdlFullPersonliste?, val hentIdente
                 }
             }
         }
+
         @Serializable
         data class PdlFoedsel(
             @Serializable(with = LocalDateSerializer::class)
             val foedselsdato: LocalDate
         )
+
         @Serializable
         data class PdlDoedsfall(
             @Serializable(with = LocalDateSerializer::class)
             val doedsdato: LocalDate
         )
+
         @Serializable
         data class PdlStatsborgerskap(val land: String)
+
         @Serializable
         data class PdlBostedsadresse(
             @Serializable(with = LocalDateTimeSerializer::class)

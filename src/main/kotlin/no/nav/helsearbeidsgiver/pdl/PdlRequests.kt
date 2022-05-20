@@ -1,4 +1,4 @@
-package no.nav.helse.arbeidsgiver.integrasjoner.pdl
+package no.nav.helsearbeidsgiver.pdl
 
 data class PdlQueryObject(
     val query: String,

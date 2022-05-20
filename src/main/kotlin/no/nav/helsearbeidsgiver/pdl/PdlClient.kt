@@ -6,8 +6,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import kotlinx.coroutines.runBlocking
-import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlQueryObject
-import no.nav.helse.arbeidsgiver.integrasjoner.pdl.Variables
 import no.nav.helsearbeidsgiver.tokenprovider.AccessTokenProvider
 import org.slf4j.LoggerFactory
 
