@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class PdlClientImplTest {
+class PdlClientTest {
 
     @Test
     internal fun `Returnerer en person ved gyldig respons fra PDL`() {
