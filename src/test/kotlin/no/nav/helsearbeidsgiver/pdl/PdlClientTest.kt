@@ -1,10 +1,9 @@
 package no.nav.helsearbeidsgiver.pdl
 
 import io.ktor.http.*
-import no.nav.helse.arbeidsgiver.integrasjoner.pdl.PdlHentFullPerson
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class PdlClientImplTest {
@@ -28,10 +27,10 @@ class PdlClientImplTest {
             ?.firstOrNull()
             ?.fornavn
 
-        // assertThat(name).isEqualTo("NILS")
+        // TODO - assertThat(name).isEqualTo("NILS")
         assertThat(response?.hentIdenter?.identer).hasSize(2)
-        //assertThat(response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.AKTORID }).hasSize(1)
-        //assertThat(response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.FOLKEREGISTERIDENT }).hasSize(1)
+        // TODO - assertThat(response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.AKTORID }).hasSize(1)
+        // TODO - assertThat(response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.FOLKEREGISTERIDENT }).hasSize(1)
         assertThat(response?.hentGeografiskTilknytning?.gtType).isEqualTo(PdlHentFullPerson.PdlGeografiskTilknytning.PdlGtType.KOMMUNE)
         assertThat(response?.hentPerson?.foedsel?.firstOrNull()?.foedselsdato).isEqualTo(LocalDate.of(1984, 1, 31))
         assertThat(response?.hentPerson?.doedsfall).hasSize(0)

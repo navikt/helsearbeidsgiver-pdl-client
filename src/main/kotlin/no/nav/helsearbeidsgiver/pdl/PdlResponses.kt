@@ -1,9 +1,6 @@
-package no.nav.helse.arbeidsgiver.integrasjoner.pdl
+package no.nav.helsearbeidsgiver.pdl
 
-import com.fasterxml.jackson.databind.JsonNode
 import kotlinx.serialization.Serializable
-import no.nav.helsearbeidsgiver.pdl.LocalDateSerializer
-import no.nav.helsearbeidsgiver.pdl.LocalDateTimeSerializer
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -85,11 +82,12 @@ data class PdlHentFullPerson(val hentPerson: PdlFullPersonliste?, val hentIdente
         data class PdlFoedsel(
             @Serializable(with = LocalDateSerializer::class)
             val foedselsdato: LocalDate
-            )
+        )
         @Serializable
         data class PdlDoedsfall(
             @Serializable(with = LocalDateSerializer::class)
-            val doedsdato: LocalDate)
+            val doedsdato: LocalDate
+        )
         @Serializable
         data class PdlStatsborgerskap(val land: String)
         @Serializable
@@ -100,9 +98,9 @@ data class PdlHentFullPerson(val hentPerson: PdlFullPersonliste?, val hentIdente
             val gyldigTilOgMed: LocalDateTime?,
             // For å hente ut om man er bosatt i norge hentes det ut om disse addressene finnes
             // dersom noden er null finnes ikke addressen
-            val vegadresse: JsonNode?,
-            val matrikkeladresse: JsonNode?,
-            val ukjentBosted: JsonNode?,
+            // TODO - val vegadresse: JsonNode?,
+            // TODO - val matrikkeladresse: JsonNode?,
+            // TODO - val ukjentBosted: JsonNode?,
             @Serializable(with = LocalDateSerializer::class)
             val angittFlyttedato: LocalDate? = null
         )
