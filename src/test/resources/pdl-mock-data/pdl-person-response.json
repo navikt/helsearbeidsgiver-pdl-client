@@ -1,0 +1,15 @@
+{
+  "data": {
+        "hentPerson": {
+          "navn": [{
+            "fornavn": "Ola",
+            "mellomnavn": "",
+            "etternavn": "Norrbagg",
+            "metadata": {
+              "master": "Freg"
+            }
+          }]
+        }
+},
+  "errors": null
+}
