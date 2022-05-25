@@ -20,7 +20,7 @@ plugins {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "navikt_im-varsel")
+        property("sonar.projectKey", "navikt_helsearbeidsgiver-pdl-client")
         property("sonar.organization", "navikt")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.login", System.getenv("SONAR_TOKEN"))
