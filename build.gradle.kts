@@ -10,16 +10,20 @@ plugins {
 }
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.1.9"
-
-tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "11"
-}
+version = "0.1.10"
 
 tasks {
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
     test {
         useJUnitPlatform()
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
@@ -57,10 +61,4 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-    }
 }
