@@ -1,22 +1,19 @@
 package no.nav.helsearbeidsgiver.pdl
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.http.*
-import io.mockk.mockk
 import kotlinx.serialization.json.Json
-import no.nav.helsearbeidsgiver.tokenprovider.AccessTokenProvider
 
 internal fun buildClient(status: HttpStatusCode, content: String): PdlClient {
+    val accessTokenProvider = MockAccessTokenProvider()
     return PdlClient(
         "url",
-        mockk<AccessTokenProvider>(relaxed = true),
-        mockHttpClient(status, content),
-        ObjectMapper()
+        { accessTokenProvider.getAccessToken() },
+        mockHttpClient(status, content)
     )
 }
 
@@ -30,7 +27,7 @@ fun String.loadFromResources(): String {
 }
 
 fun mockHttpClient(status: HttpStatusCode, content: String): HttpClient {
-    val mockEngine = MockEngine { request ->
+    val mockEngine = MockEngine {
         respond(
             content = content,
             status = status,

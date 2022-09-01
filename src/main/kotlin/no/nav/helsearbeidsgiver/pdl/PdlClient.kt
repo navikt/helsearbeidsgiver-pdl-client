@@ -1,12 +1,12 @@
 package no.nav.helsearbeidsgiver.pdl
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import kotlinx.coroutines.runBlocking
-import no.nav.helsearbeidsgiver.tokenprovider.AccessTokenProvider
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 
 /**
@@ -21,12 +21,11 @@ import org.slf4j.LoggerFactory
  */
 class PdlClient(
     private val pdlUrl: String,
-    private val stsClient: AccessTokenProvider,
-    private val httpClient: HttpClient,
-    private val om: ObjectMapper
+    private val getAccessToken: () -> String,
+    private val httpClient: HttpClient
 ) {
-    private val personNavnQuery = this::class.java.getResource("/pdl/hentPersonNavn.graphql").readText().replace(Regex("[\n\r]"), "")
-    private val fullPersonQuery = this::class.java.getResource("/pdl/hentFullPerson.graphql").readText().replace(Regex("[\n\r]"), "")
+    private val personNavnQuery = this::class.java.getResource("/pdl/hentPersonNavn.graphql")!!.readText().replace(Regex("[\n\r]"), "")
+    private val fullPersonQuery = this::class.java.getResource("/pdl/hentFullPerson.graphql")!!.readText().replace(Regex("[\n\r]"), "")
 
     fun personNavn(ident: String): PdlHentPersonNavn.PdlPersonNavneliste? {
         val entity = PdlQueryObject(personNavnQuery, Variables(ident))
@@ -36,8 +35,7 @@ class PdlClient(
 
     fun fullPerson(ident: String): PdlHentFullPerson? {
         val queryObject = PdlQueryObject(fullPersonQuery, Variables(ident))
-        val response = queryPdl<PdlHentFullPerson?, PdlResponse<PdlHentFullPerson?>>(queryObject)
-        return response
+        return queryPdl(queryObject)
     }
 
     fun personNavn(ident: String, userLoginToken: String): PdlHentPersonNavn.PdlPersonNavneliste? {
@@ -53,11 +51,11 @@ class PdlClient(
     }
 
     private inline fun <K, reified T : PdlResponse<K>> queryPdl(graphqlQuery: PdlQueryObject, loggedInUserToken: String? = null): K? {
-        val stsToken = stsClient.getToken()
+        val stsToken = getAccessToken()
         val pdlPersonReponse = runBlocking {
             httpClient.post<T> {
                 url(pdlUrl)
-                body = TextContent(om.writeValueAsString(graphqlQuery), contentType = ContentType.Application.Json)
+                body = TextContent(Json.encodeToString(graphqlQuery), contentType = ContentType.Application.Json)
                 header("Tema", "SYK")
                 header("Authorization", "Bearer ${loggedInUserToken ?: stsToken}")
                 header("Nav-Consumer-Token", "Bearer $stsToken")
