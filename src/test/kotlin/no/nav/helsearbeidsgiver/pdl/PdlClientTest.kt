@@ -1,9 +1,9 @@
 package no.nav.helsearbeidsgiver.pdl
 
-import io.ktor.http.*
-import org.junit.jupiter.api.*
+import io.ktor.http.HttpStatusCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 class PdlClientTest {

@@ -5,7 +5,9 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.http.*
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import kotlinx.serialization.json.Json
 
 internal fun buildClient(status: HttpStatusCode, content: String): PdlClient {
