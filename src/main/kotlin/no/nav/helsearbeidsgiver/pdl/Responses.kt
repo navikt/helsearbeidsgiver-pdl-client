@@ -1,8 +1,17 @@
+@file:UseSerializers(LocalDateSerializer::class, LocalDateTimeSerializer::class)
+
 package no.nav.helsearbeidsgiver.pdl
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
 import java.time.LocalDate
 import java.time.LocalDateTime
+
+@Serializable
+internal data class PdlResponse<T>(
+    val errors: List<PdlError>?,
+    val data: T?
+)
 
 /**
  * Tilsvarer graphql-spørringen hentPersonNavn.graphql
@@ -86,13 +95,11 @@ data class PdlHentFullPerson(
 
         @Serializable
         data class PdlFoedsel(
-            @Serializable(with = LocalDateSerializer::class)
             val foedselsdato: LocalDate
         )
 
         @Serializable
         data class PdlDoedsfall(
-            @Serializable(with = LocalDateSerializer::class)
             val doedsdato: LocalDate
         )
 
@@ -101,16 +108,13 @@ data class PdlHentFullPerson(
 
         @Serializable
         data class PdlBostedsadresse(
-            @Serializable(with = LocalDateTimeSerializer::class)
             val gyldigFraOgMed: LocalDateTime?,
-            @Serializable(with = LocalDateTimeSerializer::class)
             val gyldigTilOgMed: LocalDateTime?,
             // For å hente ut om man er bosatt i norge hentes det ut om disse addressene finnes
             // dersom noden er null finnes ikke addressen
             // TODO - val vegadresse: JsonNode?,
             // TODO - val matrikkeladresse: JsonNode?,
             // TODO - val ukjentBosted: JsonNode?,
-            @Serializable(with = LocalDateSerializer::class)
             val angittFlyttedato: LocalDate? = null
         )
     }
@@ -127,12 +131,6 @@ data class PdlPersonNavnMetadata(
      * Inneholder "freg" dersom "eieren" av informasjonen er folkeregisteret
      */
     val master: String
-)
-
-@Serializable
-open class PdlResponse<T>(
-    open val errors: List<PdlError>?,
-    open val data: T?
 )
 
 @Serializable
