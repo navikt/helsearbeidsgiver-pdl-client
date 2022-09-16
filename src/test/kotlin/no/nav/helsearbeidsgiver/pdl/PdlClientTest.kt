@@ -1,5 +1,6 @@
 package no.nav.helsearbeidsgiver.pdl
 
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -9,10 +10,12 @@ class PdlClientTest {
 
     @Test
     fun `Returnerer en person ved gyldig respons fra PDL`() {
-        val name = mockPdlClient(MockResponse.navn)
-            .personNavn(MOCK_FNR)
-            ?.navn
-            ?.firstOrNull()
+        val name = runBlocking {
+            mockPdlClient(MockResponse.navn)
+                .personNavn(MOCK_FNR)
+                ?.navn
+                ?.firstOrNull()
+        }
 
         assertEquals(
             "Ola" to name?.fornavn,
@@ -22,7 +25,9 @@ class PdlClientTest {
 
     @Test
     fun `Full Person returnerer en person ved gyldig respons fra PDL`() {
-        val response = mockPdlClient(MockResponse.fullPerson).fullPerson(MOCK_FNR)
+        val response = runBlocking {
+            mockPdlClient(MockResponse.fullPerson).fullPerson(MOCK_FNR)
+        }
         val name = response
             ?.hentPerson
             ?.navn
@@ -44,7 +49,9 @@ class PdlClientTest {
     @Test
     fun `Kaster PdlException ved feilrespons fra PDL`() {
         assertThrows<PdlException> {
-            mockPdlClient(MockResponse.error).personNavn(MOCK_FNR)
+            runBlocking {
+                mockPdlClient(MockResponse.error).personNavn(MOCK_FNR)
+            }
         }
     }
 }
