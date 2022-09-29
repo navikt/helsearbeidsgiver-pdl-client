@@ -7,6 +7,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import org.slf4j.LoggerFactory
 
 /**
  * Enkel GraphQL-klient for PDL som kan enten hente navn fra aktør eller fnr (ident)
@@ -37,12 +38,14 @@ class PdlClient(
 
     // Funksjonen må være inline+reified for å kunne deserialisere T
     private suspend inline fun <reified T> PdlQuery.execute(userLoginToken: String?): T? {
-        val stsToken = getAccessToken()
+        logger.info("Henter informasjon fra PDL")
+
+        val accessToken = getAccessToken()
 
         val response = httpClient.post(url) {
             contentType(ContentType.Application.Json)
-            bearerAuth(userLoginToken ?: stsToken)
-            header("Nav-Consumer-Token", "Bearer $stsToken")
+            bearerAuth(userLoginToken ?: accessToken)
+            header("Nav-Consumer-Token", "Bearer $accessToken")
             header("Tema", "SYK")
 
             setBody(this@execute)
@@ -50,14 +53,19 @@ class PdlClient(
             .body<PdlResponse<T>>()
 
         if (!response.errors.isNullOrEmpty()) {
+            logger.error("Feilmelding ved spørring mot PDL: {}", response.errors)
             throw PdlException(response.errors)
         }
 
         return response.data
     }
+    companion object {
+        private val logger = LoggerFactory.getLogger(PdlClient::class.java)
+    }
 }
 
-class PdlException(val errors: List<PdlError>?) : RuntimeException()
+class PdlException(pdlErrors: List<PdlError>?) :
+    RuntimeException("Feilmelding ved spørring mot PDL: $pdlErrors")
 
 private fun String.readQuery(): String =
     this.readResource().replace(Regex("[\r\n]"), "")
