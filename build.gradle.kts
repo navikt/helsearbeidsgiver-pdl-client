@@ -48,6 +48,7 @@ dependencies {
     val kotlinSerializationVersion: String by project
     val ktorVersion: String by project
     val mockkVersion: String by project
+    val slf4jVersion: String by project
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
 
@@ -56,6 +57,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.ktor:ktor-client-auth:$ktorVersion")
+    implementation("org.slf4j:slf4j-api:$slf4jVersion")
 
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
