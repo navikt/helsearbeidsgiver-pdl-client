@@ -51,18 +51,20 @@ class PdlClient(
     }
 
     private inline fun <K, reified T : PdlResponse<K>> queryPdl(graphqlQuery: PdlQueryObject, loggedInUserToken: String? = null): K? {
-        val stsToken = getAccessToken()
+        val accessToken = getAccessToken()
+        logger.info("Henter informasjon fra PDL")
         val pdlPersonReponse = runBlocking {
             httpClient.post<T> {
                 url(pdlUrl)
                 body = TextContent(Json.encodeToString(graphqlQuery), contentType = ContentType.Application.Json)
                 header("Tema", "SYK")
-                header("Authorization", "Bearer ${loggedInUserToken ?: stsToken}")
-                header("Nav-Consumer-Token", "Bearer $stsToken")
+                header("Authorization", "Bearer ${loggedInUserToken ?: accessToken}")
+                header("Nav-Consumer-Token", "Bearer $accessToken")
             }
         }
 
         if (pdlPersonReponse.errors != null && pdlPersonReponse.errors!!.isNotEmpty()) {
+            logger.error("Feilmelding ved spørring mot PDL: {}", pdlPersonReponse.errors)
             throw PdlException(pdlPersonReponse.errors)
         }
 
@@ -70,8 +72,9 @@ class PdlClient(
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(PdlClient::class.java)
+        private val logger = LoggerFactory.getLogger(PdlClient::class.java)
     }
 
-    class PdlException(val pdlErrors: List<PdlError>?) : RuntimeException()
+    class PdlException(pdlErrors: List<PdlError>?) :
+        Exception("Feilmelding ved spørring mot PDL: $pdlErrors")
 }
