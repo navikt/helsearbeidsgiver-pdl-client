@@ -42,7 +42,6 @@ class PdlClient(
         val response = httpClient.post(url) {
             contentType(ContentType.Application.Json)
             bearerAuth(userLoginToken ?: stsToken)
-            header("Nav-Consumer-Token", "Bearer $stsToken")
             header("Tema", "SYK")
 
             setBody(this@execute)
