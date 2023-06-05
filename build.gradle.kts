@@ -45,15 +45,15 @@ publishing {
 dependencies {
     val coroutinesVersion: String by project
     val junitJupiterVersion: String by project
-    val kotlinSerializationVersion: String by project
+    val kotlinxSerializationVersion: String by project
     val ktorVersion: String by project
     val mockkVersion: String by project
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
+    implementation("io.ktor:ktor-client-apache5:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
