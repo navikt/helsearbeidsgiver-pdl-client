@@ -33,7 +33,7 @@ fun mockPdlClient(content: String): PdlClient {
 
     return mockFn(::createHttpClient) {
         every { createHttpClient() } returns mockHttpClient
-        PdlClient("url") { "fake token" }
+        PdlClient("url", Behandlingsgrunnlag.INNTEKTSMELDING) { "fake token" }
     }
 }
 
