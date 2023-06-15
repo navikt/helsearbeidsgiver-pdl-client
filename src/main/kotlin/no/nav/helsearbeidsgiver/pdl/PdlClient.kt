@@ -1,12 +1,23 @@
 package no.nav.helsearbeidsgiver.pdl
 
-import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.serialization.KSerializer
+import no.nav.helsearbeidsgiver.pdl.domene.FullPerson
+import no.nav.helsearbeidsgiver.pdl.domene.FullPersonResultat
+import no.nav.helsearbeidsgiver.pdl.domene.PdlError
+import no.nav.helsearbeidsgiver.pdl.domene.PdlQuery
+import no.nav.helsearbeidsgiver.pdl.domene.PersonNavn
+import no.nav.helsearbeidsgiver.pdl.domene.PersonNavnResultat
+import no.nav.helsearbeidsgiver.pdl.domene.Response
+import no.nav.helsearbeidsgiver.pdl.domene.Variables
+import no.nav.helsearbeidsgiver.utils.json.fromJson
+import no.nav.helsearbeidsgiver.utils.json.toJson
 
 /**
  * Enkel GraphQL-klient for PDL som kan enten hente navn fra aktør eller fnr (ident)
@@ -26,29 +37,56 @@ class PdlClient(
     private val personNavnQuery = "hentPersonNavn.graphql".readQuery()
     private val fullPersonQuery = "hentFullPerson.graphql".readQuery()
 
-    suspend fun personNavn(ident: String, userLoginToken: String? = null): PdlHentPersonNavn.PdlPersonNavneliste? =
+    suspend fun personNavn(ident: String): PersonNavn? =
         PdlQuery(personNavnQuery, Variables(ident))
-            .execute<PdlHentPersonNavn>(userLoginToken)
+            .execute(PersonNavnResultat.serializer())
             ?.hentPerson
+            ?.navn
+            ?.firstOrNull()
+            ?.let {
+                PersonNavn(
+                    fornavn = it.fornavn,
+                    mellomnavn = it.mellomnavn,
+                    etternavn = it.etternavn
+                )
+            }
 
-    suspend fun fullPerson(ident: String, userLoginToken: String? = null): PdlHentFullPerson? =
+    suspend fun fullPerson(ident: String): FullPerson? =
         PdlQuery(fullPersonQuery, Variables(ident))
-            .execute(userLoginToken)
+            .execute(FullPersonResultat.serializer())
+            ?.hentPerson
+            ?.let {
+                val navn = it.navn.firstOrNull()
+                val foedsel = it.foedsel.firstOrNull()
 
-    // Funksjonen må være inline+reified for å kunne deserialisere T
-    private suspend inline fun <reified T> PdlQuery.execute(userLoginToken: String?): T? {
-        val stsToken = getAccessToken()
+                if (navn == null || foedsel == null) {
+                    null
+                } else {
+                    FullPerson(
+                        navn = PersonNavn(
+                            fornavn = navn.fornavn,
+                            mellomnavn = navn.mellomnavn,
+                            etternavn = navn.etternavn
+                        ),
+                        foedselsdato = foedsel.foedselsdato
+                    )
+                }
+            }
+
+    private suspend fun <T : Any> PdlQuery.execute(serializer: KSerializer<T>): T? {
+        val request = toJson(PdlQuery.serializer())
 
         val response = httpClient.post(url) {
             contentType(ContentType.Application.Json)
-            bearerAuth(userLoginToken ?: stsToken)
+            bearerAuth(getAccessToken())
             header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
             // Erstattes av 'behandlingsnummer'-header, beholdes i overgangsfase
             header("Tema", "SYK")
 
-            setBody(this@execute)
+            setBody(request)
         }
-            .body<PdlResponse<T>>()
+            .bodyAsText()
+            .fromJson(Response.serializer(serializer))
 
         if (!response.errors.isNullOrEmpty()) {
             throw PdlException(response.errors)
@@ -61,4 +99,4 @@ class PdlClient(
 class PdlException(val errors: List<PdlError>?) : RuntimeException()
 
 private fun String.readQuery(): String =
-    this.readResource().replace(Regex("[\r\n]"), "")
+    readResource().replace(Regex("[\r\n]"), "")

@@ -1,63 +1,108 @@
 package no.nav.helsearbeidsgiver.pdl
 
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.http.HttpStatusCode
+import no.nav.helsearbeidsgiver.pdl.domene.FullPerson
+import no.nav.helsearbeidsgiver.pdl.domene.PersonNavn
 import java.time.LocalDate
+import java.time.Month
 
-class PdlClientTest {
+class PdlClientTest : FunSpec({
+    context("personNavn") {
+        test("Gir personnavn ved gyldig respons") {
+            val expected = PersonNavn(
+                fornavn = "Ola",
+                mellomnavn = "",
+                etternavn = "Norrbagg"
+            )
 
-    @Test
-    fun `Returnerer en person ved gyldig respons fra PDL`() {
-        val name = runBlocking {
-            mockPdlClient(MockResponse.navn)
-                .personNavn(MOCK_FNR)
-                ?.navn
-                ?.firstOrNull()
+            val mockPdlClient = mockPdlClient(MockResponse.personNavn, HttpStatusCode.OK)
+
+            val actual = mockPdlClient.personNavn(MOCK_FNR)
+
+            actual shouldBe expected
         }
 
-        assertEquals(
-            "Ola" to name?.fornavn,
-            "Freg" to name?.metadata?.master
-        )
-    }
+        test("Gir PdlException ved feilrespons") {
+            val mockPdlClient = mockPdlClient(MockResponse.error, HttpStatusCode.OK)
 
-    @Test
-    fun `Full Person returnerer en person ved gyldig respons fra PDL`() {
-        val response = runBlocking {
-            mockPdlClient(MockResponse.fullPerson).fullPerson(MOCK_FNR)
-        }
-        val name = response
-            ?.hentPerson
-            ?.navn
-            ?.firstOrNull()
-            ?.fornavn
-
-        assertEquals(
-            "NILS" to name,
-            2 to response?.hentIdenter?.identer?.size,
-            1 to response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.AKTORID }?.size,
-            1 to response?.hentIdenter?.identer?.filter { it.gruppe == PdlIdent.PdlIdentGruppe.FOLKEREGISTERIDENT }?.size,
-            PdlHentFullPerson.PdlGeografiskTilknytning.PdlGtType.KOMMUNE to response?.hentGeografiskTilknytning?.gtType,
-            LocalDate.of(1984, 1, 31) to response?.hentPerson?.foedsel?.firstOrNull()?.foedselsdato,
-            0 to response?.hentPerson?.doedsfall?.size,
-            "MANN" to response?.hentPerson?.kjoenn?.firstOrNull()?.kjoenn
-        )
-    }
-
-    @Test
-    fun `Kaster PdlException ved feilrespons fra PDL`() {
-        assertThrows<PdlException> {
-            runBlocking {
-                mockPdlClient(MockResponse.error).personNavn(MOCK_FNR)
+            val e = shouldThrowExactly<PdlException> {
+                mockPdlClient.personNavn(MOCK_FNR)
             }
+
+            e shouldBe mockPdlException()
+        }
+
+        test("BadRequest gir ClientRequestException med status BadRequest") {
+            val mockPdlClient = mockPdlClient("", HttpStatusCode.BadRequest)
+            val e = shouldThrowExactly<ClientRequestException> {
+                mockPdlClient.personNavn(MOCK_FNR)
+            }
+
+            e.response.status shouldBe HttpStatusCode.BadRequest
+        }
+
+        test("InternalServerError gir ServerResponseException med status InternalServerError") {
+            val mockPdlClient = mockPdlClient("", HttpStatusCode.InternalServerError)
+
+            val e = shouldThrowExactly<ServerResponseException> {
+                mockPdlClient.personNavn(MOCK_FNR)
+            }
+
+            e.response.status shouldBe HttpStatusCode.InternalServerError
         }
     }
-}
 
-fun <T : Any> assertEquals(vararg expectedAndActuals: Pair<T, T?>) {
-    expectedAndActuals.forEach { (expected, actual) ->
-        Assertions.assertEquals(expected, actual)
+    context("fullPerson") {
+        test("Gir full person ved gyldig respons") {
+            val expected = FullPerson(
+                navn = PersonNavn(
+                    fornavn = "NILS",
+                    mellomnavn = null,
+                    etternavn = "FALSKESEN"
+                ),
+                foedselsdato = LocalDate.of(1984, Month.JANUARY, 31)
+            )
+
+            val mockPdlClient = mockPdlClient(MockResponse.fullPerson, HttpStatusCode.OK)
+
+            val actual = mockPdlClient.fullPerson(MOCK_FNR)
+
+            actual shouldBe expected
+        }
+
+        test("Gir PdlException ved feilrespons") {
+            val mockPdlClient = mockPdlClient(MockResponse.error, HttpStatusCode.OK)
+
+            val e = shouldThrowExactly<PdlException> {
+                mockPdlClient.fullPerson(MOCK_FNR)
+            }
+
+            e shouldBe mockPdlException()
+        }
+
+        test("BadRequest gir ClientRequestException med status BadRequest") {
+            val mockPdlClient = mockPdlClient("", HttpStatusCode.BadRequest)
+
+            val e = shouldThrowExactly<ClientRequestException> {
+                mockPdlClient.fullPerson(MOCK_FNR)
+            }
+
+            e.response.status shouldBe HttpStatusCode.BadRequest
+        }
+
+        test("InternalServerError gir ServerResponseException med status InternalServerError") {
+            val mockPdlClient = mockPdlClient("", HttpStatusCode.InternalServerError)
+
+            val e = shouldThrowExactly<ServerResponseException> {
+                mockPdlClient.fullPerson(MOCK_FNR)
+            }
+
+            e.response.status shouldBe HttpStatusCode.InternalServerError
+        }
     }
-}
+})

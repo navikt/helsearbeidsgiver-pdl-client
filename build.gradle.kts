@@ -40,11 +40,11 @@ publishing {
 }
 
 dependencies {
-    val coroutinesVersion: String by project
-    val junitJupiterVersion: String by project
+    val kotestVersion: String by project
     val kotlinxSerializationVersion: String by project
     val ktorVersion: String by project
     val mockkVersion: String by project
+    val utilsVersion: String by project
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
@@ -52,11 +52,12 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
 
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }
 
 fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {

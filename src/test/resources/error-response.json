@@ -2,12 +2,17 @@
   "data": null,
   "errors": [
     {
-      "message": "error message",
-      "locations": [{"line": null, "column": null}],
+      "message": "PDL kunne ikke finne Chuck Norris. Han finner deg.",
+      "locations": [
+        {
+          "line": null,
+          "column": null
+        }
+      ],
       "path": null,
       "extensions": {
         "code": null,
-        "classification": "Error"
+        "classification": "Tullefeil"
       }
     }
   ]
