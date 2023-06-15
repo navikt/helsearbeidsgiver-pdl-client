@@ -12,13 +12,13 @@ import io.ktor.http.contentType
  * Enkel GraphQL-klient for PDL som kan enten hente navn fra aktør eller fnr (ident)
  * eller hente mer fullstendig data om en person via fnr eller aktørid (ident)
  *
- * Authorisasjon gjøres via den gitte Token prodvideren, og servicebrukeren som er angitt i token provideren må være i
- * i AD-gruppen `0000-GA-TEMA_SYK` som dokumentert [her](https://pdldocs-navno.msappproxy.net/intern/index.html#_konsumentroller_basert_p%C3%A5_tema).
- *
- * Klienten vil alltid gi PDL-Temaet 'SYK', så om du trenger et annet tema må du endre denne klienten.
+ * Klienten bruker alltid PDL-Temaet 'SYK', så om du trenger et annet tema må du endre denne klienten.
+ * Tema vil bli erstattet av behandlingsgrunnlag på sikt.
+ * Behandlingsgrunnlag som er tilgjengelig i klienten kan utvides ved behov.
  */
 class PdlClient(
     private val url: String,
+    private val behandlingsgrunnlag: Behandlingsgrunnlag,
     private val getAccessToken: () -> String
 ) {
     private val httpClient = createHttpClient()
@@ -42,6 +42,8 @@ class PdlClient(
         val response = httpClient.post(url) {
             contentType(ContentType.Application.Json)
             bearerAuth(userLoginToken ?: stsToken)
+            header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
+            // Erstattes av 'behandlingsnummer'-header, beholdes i overgangsfase
             header("Tema", "SYK")
 
             setBody(this@execute)
