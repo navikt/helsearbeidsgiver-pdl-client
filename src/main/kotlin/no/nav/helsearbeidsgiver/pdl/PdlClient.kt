@@ -42,7 +42,7 @@ class PdlClient(
         val response = httpClient.post(url) {
             contentType(ContentType.Application.Json)
             bearerAuth(userLoginToken ?: stsToken)
-            header("behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
+            header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
             // Erstattes av 'behandlingsnummer'-header, beholdes i overgangsfase
             header("Tema", "SYK")
 
