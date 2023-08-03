@@ -5,21 +5,16 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.apache5.Apache5
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
+import no.nav.helsearbeidsgiver.utils.json.jsonIgnoreUnknown
 
 internal fun createHttpClient(): HttpClient =
-    HttpClient(Apache5) { configureJsonHandler() }
+    HttpClient(Apache5) { configure() }
 
-@OptIn(ExperimentalSerializationApi::class)
-internal fun HttpClientConfig<*>.configureJsonHandler() {
+internal fun HttpClientConfig<*>.configure() {
+    expectSuccess = true
+
     install(ContentNegotiation) {
-        json(
-            Json {
-                ignoreUnknownKeys = true
-                explicitNulls = false
-            }
-        )
+        json(jsonIgnoreUnknown)
     }
 }
 

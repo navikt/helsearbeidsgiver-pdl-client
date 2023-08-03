@@ -1,4 +1,4 @@
-package no.nav.helsearbeidsgiver.pdl
+package no.nav.helsearbeidsgiver.pdl.domene
 
 import kotlinx.serialization.Serializable
 
