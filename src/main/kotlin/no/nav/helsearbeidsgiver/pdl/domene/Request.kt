@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class PdlQuery(
     val query: String,
-    val variables: Variables
+    val variables: Variables,
 )
 
 @Serializable
 internal data class Variables(
-    val ident: String
+    val ident: String,
 )

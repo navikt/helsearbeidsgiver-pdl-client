@@ -28,7 +28,7 @@ fun mockPdlClient(content: String, status: HttpStatusCode): PdlClient {
         respond(
             content = content,
             status = status,
-            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
         )
     }
 
@@ -48,16 +48,16 @@ fun mockPdlException(): PdlException =
                 locations = listOf(
                     PdlErrorLocation(
                         line = null,
-                        column = null
-                    )
+                        column = null,
+                    ),
                 ),
                 path = null,
                 extensions = PdlErrorExtension(
                     code = null,
-                    classification = "Tullefeil"
-                )
-            )
-        )
+                    classification = "Tullefeil",
+                ),
+            ),
+        ),
     )
 
 private fun <T> mockFn(fn: KFunction<*>, block: () -> T): T {

@@ -7,17 +7,17 @@ data class PdlError(
     val message: String,
     val locations: List<PdlErrorLocation>,
     val path: List<String>? = null,
-    val extensions: PdlErrorExtension
+    val extensions: PdlErrorExtension,
 )
 
 @Serializable
 data class PdlErrorLocation(
     val line: Int? = null,
-    val column: Int? = null
+    val column: Int? = null,
 )
 
 @Serializable
 data class PdlErrorExtension(
     val code: String? = null,
-    val classification: String
+    val classification: String,
 )

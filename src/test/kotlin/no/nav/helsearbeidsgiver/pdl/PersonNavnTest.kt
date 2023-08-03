@@ -10,7 +10,7 @@ class PersonNavnTest : FunSpec({
             val navn = PersonNavn(
                 fornavn = "Samwise",
                 mellomnavn = "'The Brave'",
-                etternavn = "Gamgee"
+                etternavn = "Gamgee",
             )
 
             navn.fulltNavn() shouldBe "Samwise 'The Brave' Gamgee"
@@ -20,7 +20,7 @@ class PersonNavnTest : FunSpec({
             val navn = PersonNavn(
                 fornavn = "Frodo",
                 mellomnavn = null,
-                etternavn = "Baggins"
+                etternavn = "Baggins",
             )
 
             navn.fulltNavn() shouldBe "Frodo Baggins"
@@ -30,7 +30,7 @@ class PersonNavnTest : FunSpec({
             val navn = PersonNavn(
                 fornavn = "Bilbo",
                 mellomnavn = "",
-                etternavn = "Baggins"
+                etternavn = "Baggins",
             )
 
             navn.fulltNavn() shouldBe "Bilbo Baggins"
@@ -40,7 +40,7 @@ class PersonNavnTest : FunSpec({
             val navn = PersonNavn(
                 fornavn = "Gandalf",
                 mellomnavn = null,
-                etternavn = "  "
+                etternavn = "  ",
             )
 
             navn.fulltNavn() shouldBe "Gandalf"

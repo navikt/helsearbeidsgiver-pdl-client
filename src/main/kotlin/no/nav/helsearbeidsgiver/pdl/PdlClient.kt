@@ -30,7 +30,7 @@ import no.nav.helsearbeidsgiver.utils.json.toJson
 class PdlClient(
     private val url: String,
     private val behandlingsgrunnlag: Behandlingsgrunnlag,
-    private val getAccessToken: () -> String
+    private val getAccessToken: () -> String,
 ) {
     private val httpClient = createHttpClient()
 
@@ -47,7 +47,7 @@ class PdlClient(
                 PersonNavn(
                     fornavn = it.fornavn,
                     mellomnavn = it.mellomnavn,
-                    etternavn = it.etternavn
+                    etternavn = it.etternavn,
                 )
             }
 
@@ -66,9 +66,9 @@ class PdlClient(
                         navn = PersonNavn(
                             fornavn = navn.fornavn,
                             mellomnavn = navn.mellomnavn,
-                            etternavn = navn.etternavn
+                            etternavn = navn.etternavn,
                         ),
-                        foedselsdato = foedsel.foedselsdato
+                        foedselsdato = foedsel.foedselsdato,
                     )
                 }
             }

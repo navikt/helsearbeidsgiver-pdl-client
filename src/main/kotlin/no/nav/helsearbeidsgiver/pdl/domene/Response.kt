@@ -10,13 +10,13 @@ import java.time.LocalDate
 @Serializable
 internal data class Response<T>(
     val errors: List<PdlError>? = null,
-    val data: T? = null
+    val data: T? = null,
 )
 
 /** Tilsvarer graphql-spørringen hentPersonNavn.graphql */
 @Serializable
 internal data class PersonNavnResultat(
-    val hentPerson: PersonNavnListe? = null
+    val hentPerson: PersonNavnListe? = null,
 )
 
 @Serializable
@@ -25,23 +25,23 @@ internal data class PersonNavnListe(val navn: List<PdlPersonNavn>)
 /** Tilsvarer graphql-spørringen hentFullPerson.graphql */
 @Serializable
 internal data class FullPersonResultat(
-    val hentPerson: FullPersonListe? = null
+    val hentPerson: FullPersonListe? = null,
 )
 
 @Serializable
 internal data class FullPersonListe(
     val navn: List<PdlPersonNavn>,
-    val foedsel: List<Foedsel>
+    val foedsel: List<Foedsel>,
 )
 
 @Serializable
 internal data class PdlPersonNavn(
     val fornavn: String,
     val mellomnavn: String? = null,
-    val etternavn: String
+    val etternavn: String,
 )
 
 @Serializable
 internal data class Foedsel(
-    val foedselsdato: LocalDate
+    val foedselsdato: LocalDate,
 )

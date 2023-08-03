@@ -17,7 +17,7 @@ class PdlClientTest : FunSpec({
             val expected = PersonNavn(
                 fornavn = "Ola",
                 mellomnavn = "",
-                etternavn = "Norrbagg"
+                etternavn = "Norrbagg",
             )
 
             val mockPdlClient = mockPdlClient(MockResponse.personNavn, HttpStatusCode.OK)
@@ -63,9 +63,9 @@ class PdlClientTest : FunSpec({
                 navn = PersonNavn(
                     fornavn = "NILS",
                     mellomnavn = null,
-                    etternavn = "FALSKESEN"
+                    etternavn = "FALSKESEN",
                 ),
-                foedselsdato = LocalDate.of(1984, Month.JANUARY, 31)
+                foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
             )
 
             val mockPdlClient = mockPdlClient(MockResponse.fullPerson, HttpStatusCode.OK)
