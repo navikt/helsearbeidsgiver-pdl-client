@@ -8,12 +8,10 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.mockk.every
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import no.nav.helsearbeidsgiver.pdl.domene.PdlError
 import no.nav.helsearbeidsgiver.pdl.domene.PdlErrorExtension
 import no.nav.helsearbeidsgiver.pdl.domene.PdlErrorLocation
-import kotlin.reflect.KFunction
+import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 
 const val MOCK_FNR = "test-ident"
 
@@ -34,7 +32,7 @@ fun mockPdlClient(content: String, status: HttpStatusCode): PdlClient {
 
     val mockHttpClient = HttpClient(mockEngine) { configure() }
 
-    return mockFn(::createHttpClient) {
+    return mockStatic(::createHttpClient) {
         every { createHttpClient() } returns mockHttpClient
         PdlClient("url", Behandlingsgrunnlag.INNTEKTSMELDING) { "fake token" }
     }
@@ -59,12 +57,3 @@ fun mockPdlException(): PdlException =
             ),
         ),
     )
-
-private fun <T> mockFn(fn: KFunction<*>, block: () -> T): T {
-    mockkStatic(fn)
-    return try {
-        block()
-    } finally {
-        unmockkStatic(fn)
-    }
-}
