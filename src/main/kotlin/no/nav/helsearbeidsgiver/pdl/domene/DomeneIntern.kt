@@ -11,6 +11,7 @@ import java.time.LocalDate
 data class FullPerson(
     val navn: PersonNavn,
     val foedselsdato: LocalDate,
+    val ident: String? = null,
 )
 
 @Serializable

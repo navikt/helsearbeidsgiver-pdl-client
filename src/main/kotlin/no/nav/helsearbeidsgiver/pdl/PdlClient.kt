@@ -12,12 +12,14 @@ import no.nav.helsearbeidsgiver.pdl.domene.FullPerson
 import no.nav.helsearbeidsgiver.pdl.domene.FullPersonResultat
 import no.nav.helsearbeidsgiver.pdl.domene.PdlError
 import no.nav.helsearbeidsgiver.pdl.domene.PdlQuery
+import no.nav.helsearbeidsgiver.pdl.domene.PersonBolkResultat
 import no.nav.helsearbeidsgiver.pdl.domene.PersonNavn
 import no.nav.helsearbeidsgiver.pdl.domene.PersonNavnResultat
 import no.nav.helsearbeidsgiver.pdl.domene.Response
 import no.nav.helsearbeidsgiver.pdl.domene.Variables
 import no.nav.helsearbeidsgiver.utils.json.fromJson
 import no.nav.helsearbeidsgiver.utils.json.toJson
+import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 
 /**
  * Enkel GraphQL-klient for PDL som kan enten hente navn fra aktør eller fnr (ident)
@@ -36,9 +38,11 @@ class PdlClient(
 
     private val personNavnQuery = "hentPersonNavn.graphql".readQuery()
     private val fullPersonQuery = "hentFullPerson.graphql".readQuery()
+    private val personBolkQuery = "hentPersonBolk.graphql".readQuery()
 
+    private val logger = sikkerLogger()
     suspend fun personNavn(ident: String): PersonNavn? =
-        PdlQuery(personNavnQuery, Variables(ident))
+        PdlQuery(personNavnQuery, Variables(ident = ident))
             .execute(PersonNavnResultat.serializer())
             ?.hentPerson
             ?.navn
@@ -52,7 +56,7 @@ class PdlClient(
             }
 
     suspend fun fullPerson(ident: String): FullPerson? =
-        PdlQuery(fullPersonQuery, Variables(ident))
+        PdlQuery(fullPersonQuery, Variables(ident = ident))
             .execute(FullPersonResultat.serializer())
             ?.hentPerson
             ?.let {
@@ -70,6 +74,28 @@ class PdlClient(
                         ),
                         foedselsdato = foedsel.foedselsdato,
                     )
+                }
+            }
+
+    suspend fun personBolk(identer: List<String>): List<FullPerson>? =
+        PdlQuery(personBolkQuery, Variables(identer = identer))
+            .execute(PersonBolkResultat.serializer())
+            ?.hentPersonBolk?.mapNotNull {
+                if (it.code.equals("ok", ignoreCase = true)) {
+                    val navn = it.person?.navn?.firstOrNull()
+                    val foedsel = it.person?.foedsel?.firstOrNull()
+                    if (navn == null || foedsel == null) {
+                        null
+                    } else {
+                        FullPerson(
+                            navn = PersonNavn(navn.fornavn, navn.mellomnavn, navn.etternavn),
+                            foedselsdato = foedsel.foedselsdato,
+                            it.ident,
+                        )
+                    }
+                } else {
+                    logger.warn("Fikk kode ${it.code}, kunne ikke finne ${it.ident}")
+                    null
                 }
             }
 
