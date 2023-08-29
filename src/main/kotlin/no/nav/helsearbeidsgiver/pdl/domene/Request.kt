@@ -11,5 +11,5 @@ internal data class PdlQuery(
 @Serializable
 internal data class Variables(
     val ident: String? = null,
-    val identer: List<String>? = null
+    val identer: List<String>? = null,
 )

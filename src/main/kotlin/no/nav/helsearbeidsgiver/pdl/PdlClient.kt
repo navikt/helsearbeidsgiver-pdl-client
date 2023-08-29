@@ -90,7 +90,7 @@ class PdlClient(
                         FullPerson(
                             navn = PersonNavn(navn.fornavn, navn.mellomnavn, navn.etternavn),
                             foedselsdato = foedsel.foedselsdato,
-                            it.ident,
+                            ident = it.ident,
                         )
                     }
                 } else {
