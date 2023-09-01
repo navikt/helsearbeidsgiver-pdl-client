@@ -35,6 +35,18 @@ internal data class FullPersonListe(
 )
 
 @Serializable
+internal data class PersonBolkResultat(
+    val hentPersonBolk: List<PdlBolkPerson>? = null,
+)
+
+@Serializable
+internal data class PdlBolkPerson(
+    val ident: String,
+    val person: FullPersonListe?,
+    val code: String,
+)
+
+@Serializable
 internal data class PdlPersonNavn(
     val fornavn: String,
     val mellomnavn: String? = null,

@@ -75,6 +75,28 @@ class PdlClientTest : FunSpec({
             actual shouldBe expected
         }
 
+        context("personBolk") {
+            test("Gir liste ved gyldig respons") {
+                val expected = listOf(
+                    FullPerson(
+                        navn = PersonNavn(
+                            fornavn = "Ola",
+                            mellomnavn = null,
+                            etternavn = "Normann",
+                        ),
+                        foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
+                        ident = "12345678910",
+                    ),
+                )
+
+                val mockPdlClient = mockPdlClient(MockResponse.personBolk, HttpStatusCode.OK)
+
+                val actual = mockPdlClient.personBolk(listOf("12345678910", "12345678911", "test"))
+
+                actual shouldBe expected
+            }
+        }
+
         test("Gir PdlException ved feilrespons") {
             val mockPdlClient = mockPdlClient(MockResponse.error, HttpStatusCode.OK)
 
