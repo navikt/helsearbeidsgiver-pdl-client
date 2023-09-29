@@ -125,4 +125,6 @@ class PdlClient(
 class PdlException(val errors: List<PdlError>?) : RuntimeException()
 
 private fun String.readQuery(): String =
-    readResource().replace(Regex("[\r\n]"), "")
+    ClassLoader.getSystemResource(this)
+        .readText()
+        .replace(Regex("[\r\n]"), "")

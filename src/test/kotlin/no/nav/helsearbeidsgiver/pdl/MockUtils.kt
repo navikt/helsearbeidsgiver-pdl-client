@@ -12,6 +12,7 @@ import no.nav.helsearbeidsgiver.pdl.domene.PdlError
 import no.nav.helsearbeidsgiver.pdl.domene.PdlErrorExtension
 import no.nav.helsearbeidsgiver.pdl.domene.PdlErrorLocation
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
+import no.nav.helsearbeidsgiver.utils.test.resource.readResource
 
 const val MOCK_FNR = "test-ident"
 
