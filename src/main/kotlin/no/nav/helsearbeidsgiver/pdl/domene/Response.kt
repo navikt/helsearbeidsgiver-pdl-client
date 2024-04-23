@@ -60,15 +60,15 @@ internal data class Foedsel(
 
 @Serializable
 internal data class IdentResponse(
-    val hentIdenter: HentIdenter?= null
+    val hentIdenter: HentIdenter? = null,
 )
 
 @Serializable
 internal data class HentIdenter(
-    val identer: List<Ident>? = null
+    val identer: List<Ident>? = null,
 )
 
 @Serializable
-internal data class Ident (
-    val ident: String? = null
+internal data class Ident(
+    val ident: String? = null,
 )

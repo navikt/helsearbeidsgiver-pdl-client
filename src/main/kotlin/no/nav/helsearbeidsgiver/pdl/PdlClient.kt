@@ -99,7 +99,7 @@ class PdlClient(
                 }
             }
 
-    suspend fun hentAktoerID(ident: String) : String? =
+    suspend fun hentAktoerID(ident: String): String? =
         PdlQuery(aktorIdQuery, Variables(ident = ident))
             .execute(IdentResponse.serializer())
             ?.hentIdenter
