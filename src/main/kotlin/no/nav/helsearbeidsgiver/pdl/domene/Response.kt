@@ -63,7 +63,6 @@ internal data class IdentResponse(
     val hentIdenter: HentIdenter?= null
 )
 
-
 @Serializable
 internal data class HentIdenter(
     val identer: List<Ident>? = null
