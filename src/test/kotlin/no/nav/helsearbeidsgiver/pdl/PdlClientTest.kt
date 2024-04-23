@@ -134,7 +134,7 @@ class PdlClientTest : FunSpec({
 
             val mockPdlClient = mockPdlClient(MockResponse.aktorID, HttpStatusCode.OK)
 
-            val actual = mockPdlClient.hentAktorID(MOCK_FNR)
+            val actual = mockPdlClient.hentAktoerID(MOCK_FNR)
 
             actual shouldBe expected
         }

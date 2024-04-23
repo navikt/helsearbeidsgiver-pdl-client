@@ -20,7 +20,7 @@ object MockResponse {
     val personNavn = "hent-person-navn-response.json".readResource()
     val fullPerson = "hent-full-person-response.json".readResource()
     val personBolk = "hent-personbolk-response.json".readResource()
-    val aktorID = "hent-aktorId-response.json".readResource()
+    val aktorID = "hent-aktoer-id-response.json".readResource()
     val error = "error-response.json".readResource()
 }
 

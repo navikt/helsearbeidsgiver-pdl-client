@@ -99,9 +99,13 @@ class PdlClient(
                 }
             }
 
-    suspend fun hentAktorID(ident: String) : String? =
+    suspend fun hentAktoerID(ident: String) : String? =
         PdlQuery(aktorIdQuery, Variables(ident = ident))
-            .execute(IdentResponse.serializer())?.hentIdenter?.identer?.firstOrNull()?.ident
+            .execute(IdentResponse.serializer())
+            ?.hentIdenter
+            ?.identer
+            ?.firstOrNull()
+            ?.ident
 
     private suspend fun <T : Any> PdlQuery.execute(serializer: KSerializer<T>): T? {
         val request = toJson(PdlQuery.serializer())
