@@ -57,3 +57,19 @@ internal data class PdlPersonNavn(
 internal data class Foedsel(
     val foedselsdato: LocalDate,
 )
+
+@Serializable
+internal data class IdentResponse(
+    val hentIdenter: HentIdenter?= null
+)
+
+
+@Serializable
+internal data class HentIdenter(
+    val identer: List<Ident>? = null
+)
+
+@Serializable
+internal data class Ident (
+    val ident: String? = null
+)
