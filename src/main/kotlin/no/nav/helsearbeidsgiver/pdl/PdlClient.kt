@@ -110,8 +110,6 @@ class PdlClient(
             contentType(ContentType.Application.Json)
             bearerAuth(getAccessToken())
             header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
-            // Erstattes av 'behandlingsnummer'-header, beholdes i overgangsfase
-            header("Tema", "SYK")
 
             setBody(request)
         }
