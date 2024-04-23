@@ -127,4 +127,16 @@ class PdlClientTest : FunSpec({
             e.response.status shouldBe HttpStatusCode.InternalServerError
         }
     }
+    context("AktorID") {
+        test("Gir aktorID ved gyldig respons") {
+
+            val expected = "1234567890123"
+
+            val mockPdlClient = mockPdlClient(MockResponse.aktorID, HttpStatusCode.OK)
+
+            val actual = mockPdlClient.hentAktoerID(MOCK_FNR)
+
+            actual shouldBe expected
+        }
+    }
 })

@@ -10,6 +10,7 @@ import io.ktor.http.contentType
 import kotlinx.serialization.KSerializer
 import no.nav.helsearbeidsgiver.pdl.domene.FullPerson
 import no.nav.helsearbeidsgiver.pdl.domene.FullPersonResultat
+import no.nav.helsearbeidsgiver.pdl.domene.IdentResponse
 import no.nav.helsearbeidsgiver.pdl.domene.PdlError
 import no.nav.helsearbeidsgiver.pdl.domene.PdlQuery
 import no.nav.helsearbeidsgiver.pdl.domene.PersonBolkResultat
@@ -25,8 +26,6 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
  * Enkel GraphQL-klient for PDL som kan enten hente navn fra aktør eller fnr (ident)
  * eller hente mer fullstendig data om en person via fnr eller aktørid (ident)
  *
- * Klienten bruker alltid PDL-Temaet 'SYK', så om du trenger et annet tema må du endre denne klienten.
- * Tema vil bli erstattet av behandlingsgrunnlag på sikt.
  * Behandlingsgrunnlag som er tilgjengelig i klienten kan utvides ved behov.
  */
 class PdlClient(
@@ -39,6 +38,7 @@ class PdlClient(
     private val personNavnQuery = "hentPersonNavn.graphql".readQuery()
     private val fullPersonQuery = "hentFullPerson.graphql".readQuery()
     private val personBolkQuery = "hentPersonBolk.graphql".readQuery()
+    private val aktorIdQuery = "hentAktorID.graphql".readQuery()
 
     private val logger = sikkerLogger()
     suspend fun personNavn(ident: String): PersonNavn? =
@@ -99,6 +99,14 @@ class PdlClient(
                 }
             }
 
+    suspend fun hentAktoerID(ident: String): String? =
+        PdlQuery(aktorIdQuery, Variables(ident = ident))
+            .execute(IdentResponse.serializer())
+            ?.hentIdenter
+            ?.identer
+            ?.firstOrNull()
+            ?.ident
+
     private suspend fun <T : Any> PdlQuery.execute(serializer: KSerializer<T>): T? {
         val request = toJson(PdlQuery.serializer())
 
@@ -106,8 +114,6 @@ class PdlClient(
             contentType(ContentType.Application.Json)
             bearerAuth(getAccessToken())
             header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
-            // Erstattes av 'behandlingsnummer'-header, beholdes i overgangsfase
-            header("Tema", "SYK")
 
             setBody(request)
         }
