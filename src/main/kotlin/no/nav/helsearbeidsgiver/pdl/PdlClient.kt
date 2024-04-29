@@ -55,14 +55,15 @@ class PdlClient(
                 )
             }
 
-    suspend fun fullPerson(ident: String): FullPerson? =
-        PdlQuery(fullPersonQuery, Variables(ident = ident))
+    suspend fun fullPerson(ident: String): FullPerson? {
+        val resultat = PdlQuery(fullPersonQuery, Variables(ident = ident))
             .execute(FullPersonResultat.serializer())
-            ?.hentPerson
+        val geografiskTilknytning = resultat?.hentGeografiskTilknytning?.hentTilknytning()
+        return resultat?.hentPerson
             ?.let {
                 val navn = it.navn.firstOrNull()
                 val foedsel = it.foedsel.firstOrNull()
-
+                val gradering = it.adressebeskyttelse.firstOrNull()?.gradering
                 if (navn == null || foedsel == null) {
                     null
                 } else {
@@ -73,9 +74,12 @@ class PdlClient(
                             etternavn = navn.etternavn,
                         ),
                         foedselsdato = foedsel.foedselsdato,
+                        gradering = gradering,
+                        geografiskTilknytning = geografiskTilknytning,
                     )
                 }
             }
+    }
 
     suspend fun personBolk(identer: List<String>): List<FullPerson>? =
         PdlQuery(personBolkQuery, Variables(identer = identer))
@@ -84,6 +88,7 @@ class PdlClient(
                 if (it.code.equals("ok", ignoreCase = true)) {
                     val navn = it.person?.navn?.firstOrNull()
                     val foedsel = it.person?.foedsel?.firstOrNull()
+                    val gradering = it.person?.adressebeskyttelse?.firstOrNull()?.gradering
                     if (navn == null || foedsel == null) {
                         null
                     } else {
@@ -91,6 +96,7 @@ class PdlClient(
                             navn = PersonNavn(navn.fornavn, navn.mellomnavn, navn.etternavn),
                             foedselsdato = foedsel.foedselsdato,
                             ident = it.ident,
+                            gradering = gradering,
                         )
                     }
                 } else {

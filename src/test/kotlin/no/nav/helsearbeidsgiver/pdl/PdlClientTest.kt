@@ -66,6 +66,8 @@ class PdlClientTest : FunSpec({
                     etternavn = "FALSKESEN",
                 ),
                 foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
+                gradering = "STRENGT_FORTROLIG",
+                geografiskTilknytning = "1851",
             )
 
             val mockPdlClient = mockPdlClient(MockResponse.fullPerson, HttpStatusCode.OK)
@@ -73,6 +75,9 @@ class PdlClientTest : FunSpec({
             val actual = mockPdlClient.fullPerson(MOCK_FNR)
 
             actual shouldBe expected
+
+            expected.getKodeverkDiskresjonskode() shouldBe "SPSF"
+            actual?.geografiskTilknytning shouldBe "1851"
         }
 
         context("personBolk") {
@@ -86,6 +91,7 @@ class PdlClientTest : FunSpec({
                         ),
                         foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
                         ident = "12345678910",
+                        gradering = null,
                     ),
                 )
 
