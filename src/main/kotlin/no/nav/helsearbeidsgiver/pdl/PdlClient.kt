@@ -81,7 +81,7 @@ class PdlClient(
             }
     }
 
-    /*
+    /**
     OBS: PersonBolk-kallet henter ikke ut geografiskTilknytning!
     Så FullPerson fra dette kallet, vil aldri ha dette satt..
     TODO?: Lag to forskjellige Person-objekter, for å skille mellom disse
