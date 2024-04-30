@@ -82,9 +82,9 @@ class PdlClient(
     }
 
     /**
-    OBS: PersonBolk-kallet henter ikke ut geografiskTilknytning!
-    Så FullPerson fra dette kallet, vil aldri ha dette satt..
-    TODO?: Lag to forskjellige Person-objekter, for å skille mellom disse
+     OBS: PersonBolk-kallet henter ikke ut geografiskTilknytning!
+     Så FullPerson fra dette kallet, vil aldri ha dette satt..
+     TODO?: Lag to forskjellige Person-objekter, for å skille mellom disse
      */
     suspend fun personBolk(identer: List<String>): List<FullPerson>? =
         PdlQuery(personBolkQuery, Variables(identer = identer))
@@ -141,8 +141,8 @@ class PdlClient(
 
 fun getKodeverkDiskresjonskode(gradering: String?): String? {
     return when (gradering) {
-        KONSTANTER.STRENGT_FORTROLIG -> "SPSF"
-        KONSTANTER.FORTROLIG -> "SPFO"
+        GRADERING.STRENGT_FORTROLIG -> "SPSF"
+        GRADERING.FORTROLIG -> "SPFO"
         else -> null
     }
 }

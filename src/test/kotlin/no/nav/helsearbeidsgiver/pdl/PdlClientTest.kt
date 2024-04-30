@@ -66,7 +66,7 @@ class PdlClientTest : FunSpec({
                     etternavn = "FALSKESEN",
                 ),
                 foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
-                diskresjonskode = getKodeverkDiskresjonskode(KONSTANTER.STRENGT_FORTROLIG),
+                diskresjonskode = getKodeverkDiskresjonskode(GRADERING.STRENGT_FORTROLIG),
                 geografiskTilknytning = "1851",
             )
 
@@ -82,8 +82,8 @@ class PdlClientTest : FunSpec({
                 getKodeverkDiskresjonskode(null) shouldBe null
             }
             test("Håndterer gyldige verdier") {
-                getKodeverkDiskresjonskode(KONSTANTER.STRENGT_FORTROLIG) shouldBe "SPSF"
-                getKodeverkDiskresjonskode(KONSTANTER.FORTROLIG) shouldBe "SPFO"
+                getKodeverkDiskresjonskode(GRADERING.STRENGT_FORTROLIG) shouldBe "SPSF"
+                getKodeverkDiskresjonskode(GRADERING.FORTROLIG) shouldBe "SPFO"
             }
             test("Håndterer ugyldige verdier") {
                 getKodeverkDiskresjonskode("") shouldBe null
