@@ -12,7 +12,7 @@ data class FullPerson(
     val navn: PersonNavn,
     val foedselsdato: LocalDate,
     val ident: String? = null,
-    val gradering: String? = null,
+    val diskresjonskode: String? = null,
     val geografiskTilknytning: String? = null,
 )
 

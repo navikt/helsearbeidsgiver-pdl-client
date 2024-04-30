@@ -63,7 +63,7 @@ class PdlClient(
             ?.let {
                 val navn = it.navn.firstOrNull()
                 val foedsel = it.foedsel.firstOrNull()
-                val gradering = getKodeverkDiskresjonskode(it?.adressebeskyttelse?.firstOrNull()?.gradering)
+                val diskresjonskode = getKodeverkDiskresjonskode(it.adressebeskyttelse.firstOrNull()?.gradering)
                 if (navn == null || foedsel == null) {
                     null
                 } else {
@@ -74,7 +74,7 @@ class PdlClient(
                             etternavn = navn.etternavn,
                         ),
                         foedselsdato = foedsel.foedselsdato,
-                        gradering = gradering,
+                        diskresjonskode = diskresjonskode,
                         geografiskTilknytning = geografiskTilknytning,
                     )
                 }
@@ -93,7 +93,7 @@ class PdlClient(
                 if (it.code.equals("ok", ignoreCase = true)) {
                     val navn = it.person?.navn?.firstOrNull()
                     val foedsel = it.person?.foedsel?.firstOrNull()
-                    val gradering = getKodeverkDiskresjonskode(it.person?.adressebeskyttelse?.firstOrNull()?.gradering)
+                    val diskresjonskode = getKodeverkDiskresjonskode(it.person?.adressebeskyttelse?.firstOrNull()?.gradering)
                     if (navn == null || foedsel == null) {
                         null
                     } else {
@@ -101,7 +101,7 @@ class PdlClient(
                             navn = PersonNavn(navn.fornavn, navn.mellomnavn, navn.etternavn),
                             foedselsdato = foedsel.foedselsdato,
                             ident = it.ident,
-                            gradering = gradering,
+                            diskresjonskode = diskresjonskode,
                         )
                     }
                 } else {

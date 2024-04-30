@@ -66,7 +66,7 @@ class PdlClientTest : FunSpec({
                     etternavn = "FALSKESEN",
                 ),
                 foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
-                gradering = getKodeverkDiskresjonskode(KONSTANTER.STRENGT_FORTROLIG),
+                diskresjonskode = getKodeverkDiskresjonskode(KONSTANTER.STRENGT_FORTROLIG),
                 geografiskTilknytning = "1851",
             )
 
@@ -102,7 +102,7 @@ class PdlClientTest : FunSpec({
                         ),
                         foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
                         ident = "12345678910",
-                        gradering = null,
+                        diskresjonskode = null,
                     ),
                 )
 
