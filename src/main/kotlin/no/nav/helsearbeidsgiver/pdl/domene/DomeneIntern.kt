@@ -14,15 +14,7 @@ data class FullPerson(
     val ident: String? = null,
     val gradering: String? = null,
     val geografiskTilknytning: String? = null,
-) {
-    fun getKodeverkDiskresjonskode(): String? {
-        return when (gradering) {
-            "STRENGT_FORTROLIG" -> "SPSF"
-            "FORTROLIG" -> "SPFO"
-            else -> null
-        }
-    }
-}
+)
 
 @Serializable
 data class PersonNavn(

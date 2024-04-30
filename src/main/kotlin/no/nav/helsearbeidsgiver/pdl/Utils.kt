@@ -17,3 +17,8 @@ internal fun HttpClientConfig<*>.configure() {
         json(jsonConfig)
     }
 }
+
+object KONSTANTER {
+    val FORTROLIG = "FORTROLIG"
+    val STRENGT_FORTROLIG = "STRENGT_FORTROLIG"
+}

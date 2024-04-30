@@ -63,7 +63,7 @@ class PdlClient(
             ?.let {
                 val navn = it.navn.firstOrNull()
                 val foedsel = it.foedsel.firstOrNull()
-                val gradering = it.adressebeskyttelse.firstOrNull()?.gradering
+                val gradering = getKodeverkDiskresjonskode(it?.adressebeskyttelse?.firstOrNull()?.gradering)
                 if (navn == null || foedsel == null) {
                     null
                 } else {
@@ -81,6 +81,11 @@ class PdlClient(
             }
     }
 
+    /*
+    OBS: PersonBolk-kallet henter ikke ut geografiskTilknytning!
+    Så FullPerson fra dette kallet, vil aldri ha dette satt..
+    TODO?: Lag to forskjellige Person-objekter, for å skille mellom disse
+     */
     suspend fun personBolk(identer: List<String>): List<FullPerson>? =
         PdlQuery(personBolkQuery, Variables(identer = identer))
             .execute(PersonBolkResultat.serializer())
@@ -88,7 +93,7 @@ class PdlClient(
                 if (it.code.equals("ok", ignoreCase = true)) {
                     val navn = it.person?.navn?.firstOrNull()
                     val foedsel = it.person?.foedsel?.firstOrNull()
-                    val gradering = it.person?.adressebeskyttelse?.firstOrNull()?.gradering
+                    val gradering = getKodeverkDiskresjonskode(it.person?.adressebeskyttelse?.firstOrNull()?.gradering)
                     if (navn == null || foedsel == null) {
                         null
                     } else {
@@ -134,6 +139,13 @@ class PdlClient(
     }
 }
 
+fun getKodeverkDiskresjonskode(gradering: String?): String? {
+    return when (gradering) {
+        KONSTANTER.STRENGT_FORTROLIG -> "SPSF"
+        KONSTANTER.FORTROLIG -> "SPFO"
+        else -> null
+    }
+}
 class PdlException(val errors: List<PdlError>?) : RuntimeException()
 
 private fun String.readQuery(): String =

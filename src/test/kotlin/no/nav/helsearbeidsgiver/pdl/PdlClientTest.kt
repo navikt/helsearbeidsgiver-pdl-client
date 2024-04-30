@@ -66,7 +66,7 @@ class PdlClientTest : FunSpec({
                     etternavn = "FALSKESEN",
                 ),
                 foedselsdato = LocalDate.of(1984, Month.JANUARY, 31),
-                gradering = "STRENGT_FORTROLIG",
+                gradering = getKodeverkDiskresjonskode(KONSTANTER.STRENGT_FORTROLIG),
                 geografiskTilknytning = "1851",
             )
 
@@ -75,9 +75,20 @@ class PdlClientTest : FunSpec({
             val actual = mockPdlClient.fullPerson(MOCK_FNR)
 
             actual shouldBe expected
+        }
 
-            expected.getKodeverkDiskresjonskode() shouldBe "SPSF"
-            actual?.geografiskTilknytning shouldBe "1851"
+        context("oversettKodeverkDiskresjonskode") {
+            test("Håndterer null") {
+                getKodeverkDiskresjonskode(null) shouldBe null
+            }
+            test("Håndterer gyldige verdier") {
+                getKodeverkDiskresjonskode(KONSTANTER.STRENGT_FORTROLIG) shouldBe "SPSF"
+                getKodeverkDiskresjonskode(KONSTANTER.FORTROLIG) shouldBe "SPFO"
+            }
+            test("Håndterer ugyldige verdier") {
+                getKodeverkDiskresjonskode("") shouldBe null
+                getKodeverkDiskresjonskode("Whatever") shouldBe null
+            }
         }
 
         context("personBolk") {
