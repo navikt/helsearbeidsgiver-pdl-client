@@ -40,7 +40,12 @@ internal data class FullPersonListe(
 internal data class PdlAdresseBeskyttelse(val gradering: String?)
 
 @Serializable
-internal data class PdlGeografiskTilknytning(val gtType: PdlGtType, val gtKommune: String?, val gtBydel: String?, val gtLand: String?) {
+internal data class PdlGeografiskTilknytning(
+    val gtType: PdlGtType,
+    val gtKommune: String?,
+    val gtBydel: String?,
+    val gtLand: String?,
+) {
     fun hentTilknytning(): String? {
         return when (gtType) {
             PdlGtType.KOMMUNE -> gtKommune
@@ -49,6 +54,7 @@ internal data class PdlGeografiskTilknytning(val gtType: PdlGtType, val gtKommun
             PdlGtType.UDEFINERT -> null
         }
     }
+
     enum class PdlGtType { KOMMUNE, BYDEL, UTLAND, UDEFINERT }
 }
 
