@@ -11,6 +11,11 @@
               "etternavn": "Normann"
             }
           ],
+          "adressebeskyttelse": [
+            {
+              "gradering": null
+            }
+          ],
           "foedsel": [
             {
               "foedselsdato": "1984-01-31"

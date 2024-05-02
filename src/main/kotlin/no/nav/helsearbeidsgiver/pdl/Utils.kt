@@ -17,3 +17,8 @@ internal fun HttpClientConfig<*>.configure() {
         json(jsonConfig)
     }
 }
+
+object GRADERING {
+    val FORTROLIG = "FORTROLIG"
+    val STRENGT_FORTROLIG = "STRENGT_FORTROLIG"
+}

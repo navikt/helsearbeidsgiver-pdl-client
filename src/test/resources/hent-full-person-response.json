@@ -84,7 +84,11 @@
         }
       ],
       "doedsfall": [],
-      "adressebeskyttelse": [],
+      "adressebeskyttelse": [
+        {
+          "gradering": "STRENGT_FORTROLIG"
+        }
+      ],
       "kjoenn": [
         {
           "kjoenn": "MANN"
