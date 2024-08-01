@@ -62,7 +62,7 @@ class PdlClient(
         return resultat?.hentPerson
             ?.let {
                 val navn = it.navn.firstOrNull()
-                val foedsel = it.foedsel.firstOrNull()
+                val foedsel = it.foedselsdato.firstOrNull()
                 val diskresjonskode = getKodeverkDiskresjonskode(it.adressebeskyttelse.firstOrNull()?.gradering)
                 if (navn == null || foedsel == null) {
                     null
@@ -92,7 +92,7 @@ class PdlClient(
             ?.hentPersonBolk?.mapNotNull {
                 if (it.code.equals("ok", ignoreCase = true)) {
                     val navn = it.person?.navn?.firstOrNull()
-                    val foedsel = it.person?.foedsel?.firstOrNull()
+                    val foedsel = it.person?.foedselsdato?.firstOrNull()
                     val diskresjonskode = getKodeverkDiskresjonskode(it.person?.adressebeskyttelse?.firstOrNull()?.gradering)
                     if (navn == null || foedsel == null) {
                         null

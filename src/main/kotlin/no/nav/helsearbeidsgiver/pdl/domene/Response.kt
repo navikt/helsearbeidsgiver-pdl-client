@@ -32,7 +32,7 @@ internal data class FullPersonResultat(
 @Serializable
 internal data class FullPersonListe(
     val navn: List<PdlPersonNavn>,
-    val foedsel: List<Foedsel>,
+    val foedselsdato: List<Foedseldato>,
     val adressebeskyttelse: List<PdlAdresseBeskyttelse>,
 )
 
@@ -78,7 +78,7 @@ internal data class PdlPersonNavn(
 )
 
 @Serializable
-internal data class Foedsel(
+internal data class Foedseldato(
     val foedselsdato: LocalDate,
 )
 
