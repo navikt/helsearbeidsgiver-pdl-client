@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.6.1"
+version = "0.6.2-SNAPSHOT"
 
 plugins {
     kotlin("jvm")
@@ -71,4 +71,8 @@ fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
             password = githubPassword
         }
     }
+}
+
+tasks.register("printVersion") {
+    println(project.version)
 }
