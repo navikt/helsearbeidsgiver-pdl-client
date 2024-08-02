@@ -635,7 +635,7 @@ type UtflyttingFraNorge {
 }
 
 type VergeEllerFullmektig {
-    navn: Personnavn @deprecated(reason:"Erstattes av navn iidentifiserendeInformasjon")
+    navn: Personnavn @deprecated(reason:"Erstattes av navn i identifiserendeInformasjon")
     identifiserendeInformasjon: IdentifiserendeInformasjon
     motpartsPersonident: String
     omfang: String
