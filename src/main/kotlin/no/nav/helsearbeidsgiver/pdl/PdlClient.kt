@@ -62,9 +62,9 @@ class PdlClient(
         return resultat?.hentPerson
             ?.let {
                 val navn = it.navn.firstOrNull()
-                val foedseldato = it.foedselsdato.firstOrNull()
+                val foedselsdato = it.foedselsdato.firstOrNull()
                 val diskresjonskode = getKodeverkDiskresjonskode(it.adressebeskyttelse.firstOrNull()?.gradering)
-                if (navn == null || foedseldato == null) {
+                if (navn == null || foedselsdato == null) {
                     null
                 } else {
                     FullPerson(
@@ -73,7 +73,7 @@ class PdlClient(
                             mellomnavn = navn.mellomnavn,
                             etternavn = navn.etternavn,
                         ),
-                        foedselsdato = foedseldato.foedselsdato,
+                        foedselsdato = foedselsdato.foedselsdato,
                         diskresjonskode = diskresjonskode,
                         geografiskTilknytning = geografiskTilknytning,
                     )
