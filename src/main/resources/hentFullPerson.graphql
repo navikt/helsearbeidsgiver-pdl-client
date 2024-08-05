@@ -17,7 +17,7 @@ query($ident: ID!) {
             ukjentBosted{ bostedskommune }
         }
         statsborgerskap { land }
-        foedsel { foedselsdato }
+        foedselsdato { foedselsdato }
         doedsfall { doedsdato }
         adressebeskyttelse { gradering }
         kjoenn { kjoenn }
