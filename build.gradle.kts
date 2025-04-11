@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "no.nav.helsearbeidsgiver"
 version = "0.6.2"
@@ -10,10 +10,13 @@ plugins {
     id("maven-publish")
 }
 
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
     }
+}
+
+tasks {
     test {
         useJUnitPlatform()
     }
