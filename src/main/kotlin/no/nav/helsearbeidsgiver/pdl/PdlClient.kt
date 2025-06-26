@@ -8,6 +8,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.JsonElement
 import no.nav.helsearbeidsgiver.pdl.domene.FullPerson
 import no.nav.helsearbeidsgiver.pdl.domene.FullPersonResultat
 import no.nav.helsearbeidsgiver.pdl.domene.IdentResponse
@@ -18,6 +19,7 @@ import no.nav.helsearbeidsgiver.pdl.domene.PersonNavn
 import no.nav.helsearbeidsgiver.pdl.domene.PersonNavnResultat
 import no.nav.helsearbeidsgiver.pdl.domene.Response
 import no.nav.helsearbeidsgiver.pdl.domene.Variables
+import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.json.fromJson
 import no.nav.helsearbeidsgiver.utils.json.toJson
 import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
@@ -27,13 +29,17 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
  * eller hente mer fullstendig data om en person via fnr eller aktørid (ident)
  *
  * Behandlingsgrunnlag som er tilgjengelig i klienten kan utvides ved behov.
+ *
+ * @param cacheConfig Samme cache brukes til alle kall. Dette er viktig å vite for valg av levetid og størrelse.
  */
 class PdlClient(
     private val url: String,
     private val behandlingsgrunnlag: Behandlingsgrunnlag,
+    cacheConfig: LocalCache.Config,
     private val getAccessToken: () -> String,
 ) {
     private val httpClient = createHttpClient()
+    private val cache = LocalCache<Response<JsonElement>>(cacheConfig)
 
     private val personNavnQuery = "hentPersonNavn.graphql".readQuery()
     private val fullPersonQuery = "hentFullPerson.graphql".readQuery()
@@ -121,31 +127,35 @@ class PdlClient(
     private suspend fun <T : Any> PdlQuery.execute(serializer: KSerializer<T>): T? {
         val request = toJson(PdlQuery.serializer())
 
-        val response = httpClient.post(url) {
-            contentType(ContentType.Application.Json)
-            bearerAuth(getAccessToken())
-            header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
+        val response =
+            cache.getOrPut(this.toString()) {
+                httpClient.post(url) {
+                    contentType(ContentType.Application.Json)
+                    bearerAuth(getAccessToken())
+                    header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
 
-            setBody(request)
-        }
-            .bodyAsText()
-            .fromJson(Response.serializer(serializer))
+                    setBody(request)
+                }
+                    .bodyAsText()
+                    .fromJson(Response.serializer(JsonElement.serializer()))
+                    .also {
+                        if (!it.errors.isNullOrEmpty()) {
+                            throw PdlException(it.errors)
+                        }
+                    }
+            }
 
-        if (!response.errors.isNullOrEmpty()) {
-            throw PdlException(response.errors)
-        }
-
-        return response.data
+        return response.data?.fromJson(serializer)
     }
 }
 
-fun getKodeverkDiskresjonskode(gradering: String?): String? {
-    return when (gradering) {
+fun getKodeverkDiskresjonskode(gradering: String?): String? =
+    when (gradering) {
         GRADERING.STRENGT_FORTROLIG -> "SPSF"
         GRADERING.FORTROLIG -> "SPFO"
         else -> null
     }
-}
+
 class PdlException(val errors: List<PdlError>?) : RuntimeException()
 
 private fun String.readQuery(): String =
