@@ -11,8 +11,10 @@ import io.mockk.every
 import no.nav.helsearbeidsgiver.pdl.domene.PdlError
 import no.nav.helsearbeidsgiver.pdl.domene.PdlErrorExtension
 import no.nav.helsearbeidsgiver.pdl.domene.PdlErrorLocation
+import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 import no.nav.helsearbeidsgiver.utils.test.resource.readResource
+import kotlin.time.Duration
 
 const val MOCK_FNR = "test-ident"
 
@@ -37,7 +39,11 @@ fun mockPdlClient(content: String, status: HttpStatusCode): PdlClient {
 
     return mockStatic(::createHttpClient) {
         every { createHttpClient() } returns mockHttpClient
-        PdlClient("url", Behandlingsgrunnlag.INNTEKTSMELDING) { "fake token" }
+        PdlClient(
+            "url",
+            Behandlingsgrunnlag.INNTEKTSMELDING,
+            LocalCache.Config(entryDuration = Duration.ZERO, maxEntries = 1),
+        ) { "fake token" }
     }
 }
 
