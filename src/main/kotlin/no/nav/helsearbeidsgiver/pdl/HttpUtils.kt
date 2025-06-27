@@ -3,6 +3,8 @@ package no.nav.helsearbeidsgiver.pdl
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.apache5.Apache5
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import no.nav.helsearbeidsgiver.utils.json.jsonConfig
@@ -16,9 +18,21 @@ internal fun HttpClientConfig<*>.configure() {
     install(ContentNegotiation) {
         json(jsonConfig)
     }
-}
 
-object GRADERING {
-    val FORTROLIG = "FORTROLIG"
-    val STRENGT_FORTROLIG = "STRENGT_FORTROLIG"
+    install(HttpRequestRetry) {
+        retryOnException(
+            maxRetries = 5,
+            retryOnTimeout = true,
+        )
+        constantDelay(
+            millis = 500,
+            randomizationMs = 500,
+        )
+    }
+
+    install(HttpTimeout) {
+        connectTimeoutMillis = 500
+        requestTimeoutMillis = 500
+        socketTimeoutMillis = 500
+    }
 }
