@@ -38,6 +38,8 @@ class PdlClient(
     cacheConfig: LocalCache.Config,
     private val getAccessToken: () -> String,
 ) {
+    private val sikkerLogger = sikkerLogger()
+
     private val httpClient = createHttpClient()
     private val cache = LocalCache<Response<JsonElement>>(cacheConfig)
 
@@ -46,7 +48,6 @@ class PdlClient(
     private val personBolkQuery = "hentPersonBolk.graphql".readQuery()
     private val aktorIdQuery = "hentAktorID.graphql".readQuery()
 
-    private val logger = sikkerLogger()
     suspend fun personNavn(ident: String): PersonNavn? =
         PdlQuery(personNavnQuery, Variables(ident = ident))
             .execute(PersonNavnResultat.serializer())
@@ -69,7 +70,7 @@ class PdlClient(
             ?.let {
                 val navn = it.navn.firstOrNull()
                 val foedselsdato = it.foedselsdato.firstOrNull()
-                val diskresjonskode = getKodeverkDiskresjonskode(it.adressebeskyttelse.firstOrNull()?.gradering)
+                val diskresjonskode = it.adressebeskyttelse.firstOrNull()?.gradering?.tilKodeverkDiskresjonskode()
                 if (navn == null || foedselsdato == null) {
                     null
                 } else {
@@ -92,14 +93,15 @@ class PdlClient(
      Så FullPerson fra dette kallet, vil aldri ha dette satt..
      TODO?: Lag to forskjellige Person-objekter, for å skille mellom disse
      */
-    suspend fun personBolk(identer: List<String>): List<FullPerson>? =
+    suspend fun personBolk(identer: List<String>): List<FullPerson> =
         PdlQuery(personBolkQuery, Variables(identer = identer))
             .execute(PersonBolkResultat.serializer())
-            ?.hentPersonBolk?.mapNotNull {
+            ?.hentPersonBolk
+            ?.mapNotNull {
                 if (it.code.equals("ok", ignoreCase = true)) {
                     val navn = it.person?.navn?.firstOrNull()
                     val foedsel = it.person?.foedselsdato?.firstOrNull()
-                    val diskresjonskode = getKodeverkDiskresjonskode(it.person?.adressebeskyttelse?.firstOrNull()?.gradering)
+                    val diskresjonskode = it.person?.adressebeskyttelse?.firstOrNull()?.gradering?.tilKodeverkDiskresjonskode()
                     if (navn == null || foedsel == null) {
                         null
                     } else {
@@ -111,10 +113,11 @@ class PdlClient(
                         )
                     }
                 } else {
-                    logger.warn("Fikk kode ${it.code}, kunne ikke finne ${it.ident}")
+                    sikkerLogger.warn("Fikk kode ${it.code}, kunne ikke finne ${it.ident}")
                     null
                 }
             }
+            .orEmpty()
 
     suspend fun hentAktoerID(ident: String): String? =
         PdlQuery(aktorIdQuery, Variables(ident = ident))
@@ -148,13 +151,6 @@ class PdlClient(
         return response.data?.fromJson(serializer)
     }
 }
-
-fun getKodeverkDiskresjonskode(gradering: String?): String? =
-    when (gradering) {
-        GRADERING.STRENGT_FORTROLIG -> "SPSF"
-        GRADERING.FORTROLIG -> "SPFO"
-        else -> null
-    }
 
 class PdlException(val errors: List<PdlError>?) : RuntimeException()
 
