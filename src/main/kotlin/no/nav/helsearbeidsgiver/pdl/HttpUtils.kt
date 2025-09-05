@@ -21,7 +21,7 @@ internal fun HttpClientConfig<*>.configure() {
 
     install(HttpRequestRetry) {
         retryOnException(
-            maxRetries = 5,
+            maxRetries = 3,
             retryOnTimeout = true,
         )
         constantDelay(
@@ -31,8 +31,8 @@ internal fun HttpClientConfig<*>.configure() {
     }
 
     install(HttpTimeout) {
-        connectTimeoutMillis = 500
-        requestTimeoutMillis = 500
-        socketTimeoutMillis = 500
+        connectTimeoutMillis = 10000
+        requestTimeoutMillis = 10000
+        socketTimeoutMillis = 10000
     }
 }
