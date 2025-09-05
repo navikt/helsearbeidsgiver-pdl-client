@@ -143,10 +143,8 @@ class PdlClientTest : FunSpec({
                     e.response.status shouldBe HttpStatusCode.BadRequest
                 }
 
-                test("lykkes ved færre 5xx-feil enn max retries (5)") {
+                test("lykkes ved færre 5xx-feil enn max retries (3)") {
                     val mockPdlClient = mockPdlClient(
-                        HttpStatusCode.InternalServerError to "",
-                        HttpStatusCode.InternalServerError to "",
                         HttpStatusCode.InternalServerError to "",
                         HttpStatusCode.InternalServerError to "",
                         HttpStatusCode.InternalServerError to "",
@@ -160,11 +158,9 @@ class PdlClientTest : FunSpec({
                     }
                 }
 
-                test("feiler ved flere 5xx-feil enn max retries (5)") {
+                test("feiler ved flere 5xx-feil enn max retries (3)") {
                     val mockPdlClient =
                         mockPdlClient(
-                            HttpStatusCode.InternalServerError to "",
-                            HttpStatusCode.InternalServerError to "",
                             HttpStatusCode.InternalServerError to "",
                             HttpStatusCode.InternalServerError to "",
                             HttpStatusCode.InternalServerError to "",
@@ -183,8 +179,6 @@ class PdlClientTest : FunSpec({
                 test("kall feiler og prøver på nytt ved timeout") {
                     val mockPdlClient =
                         mockPdlClient(
-                            HttpStatusCode.OK to "timeout",
-                            HttpStatusCode.OK to "timeout",
                             HttpStatusCode.OK to "timeout",
                             HttpStatusCode.OK to "timeout",
                             HttpStatusCode.OK to "timeout",
