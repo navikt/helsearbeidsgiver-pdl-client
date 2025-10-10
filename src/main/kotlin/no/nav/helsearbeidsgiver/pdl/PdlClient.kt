@@ -63,23 +63,30 @@ class PdlClient(
             }
 
     suspend fun fullPerson(ident: String): FullPerson? {
-        val resultat = PdlQuery(fullPersonQuery, Variables(ident = ident))
-            .execute(FullPersonResultat.serializer())
+        val resultat =
+            PdlQuery(fullPersonQuery, Variables(ident = ident))
+                .execute(FullPersonResultat.serializer())
         val geografiskTilknytning = resultat?.hentGeografiskTilknytning?.hentTilknytning()
-        return resultat?.hentPerson
+        return resultat
+            ?.hentPerson
             ?.let {
                 val navn = it.navn.firstOrNull()
                 val foedselsdato = it.foedselsdato.firstOrNull()
-                val diskresjonskode = it.adressebeskyttelse.firstOrNull()?.gradering?.tilKodeverkDiskresjonskode()
+                val diskresjonskode =
+                    it.adressebeskyttelse
+                        .firstOrNull()
+                        ?.gradering
+                        ?.tilKodeverkDiskresjonskode()
                 if (navn == null || foedselsdato == null) {
                     null
                 } else {
                     FullPerson(
-                        navn = PersonNavn(
-                            fornavn = navn.fornavn,
-                            mellomnavn = navn.mellomnavn,
-                            etternavn = navn.etternavn,
-                        ),
+                        navn =
+                            PersonNavn(
+                                fornavn = navn.fornavn,
+                                mellomnavn = navn.mellomnavn,
+                                etternavn = navn.etternavn,
+                            ),
                         foedselsdato = foedselsdato.foedselsdato,
                         diskresjonskode = diskresjonskode,
                         geografiskTilknytning = geografiskTilknytning,
@@ -101,7 +108,12 @@ class PdlClient(
                 if (it.code.equals("ok", ignoreCase = true)) {
                     val navn = it.person?.navn?.firstOrNull()
                     val foedsel = it.person?.foedselsdato?.firstOrNull()
-                    val diskresjonskode = it.person?.adressebeskyttelse?.firstOrNull()?.gradering?.tilKodeverkDiskresjonskode()
+                    val diskresjonskode =
+                        it.person
+                            ?.adressebeskyttelse
+                            ?.firstOrNull()
+                            ?.gradering
+                            ?.tilKodeverkDiskresjonskode()
                     if (navn == null || foedsel == null) {
                         null
                     } else {
@@ -116,8 +128,7 @@ class PdlClient(
                     sikkerLogger.warn("Fikk kode ${it.code}, kunne ikke finne ${it.ident}")
                     null
                 }
-            }
-            .orEmpty()
+            }.orEmpty()
 
     suspend fun hentAktoerID(ident: String): String? =
         PdlQuery(aktorIdQuery, Variables(ident = ident))
@@ -132,14 +143,14 @@ class PdlClient(
 
         val response =
             cache.getOrPut(this.toString()) {
-                httpClient.post(url) {
-                    contentType(ContentType.Application.Json)
-                    bearerAuth(getAccessToken())
-                    header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
+                httpClient
+                    .post(url) {
+                        contentType(ContentType.Application.Json)
+                        bearerAuth(getAccessToken())
+                        header("Behandlingsnummer", behandlingsgrunnlag.behandlingsnummer)
 
-                    setBody(request)
-                }
-                    .bodyAsText()
+                        setBody(request)
+                    }.bodyAsText()
                     .fromJson(Response.serializer(JsonElement.serializer()))
                     .also {
                         if (!it.errors.isNullOrEmpty()) {
@@ -152,9 +163,12 @@ class PdlClient(
     }
 }
 
-class PdlException(val errors: List<PdlError>?) : RuntimeException()
+class PdlException(
+    val errors: List<PdlError>?,
+) : RuntimeException()
 
 private fun String.readQuery(): String =
-    ClassLoader.getSystemResource(this)
+    ClassLoader
+        .getSystemResource(this)
         .readText()
         .replace(Regex("[\r\n]"), "")

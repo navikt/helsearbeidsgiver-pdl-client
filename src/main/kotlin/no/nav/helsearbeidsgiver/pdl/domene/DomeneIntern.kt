@@ -27,7 +27,6 @@ data class PersonNavn(
             fornavn,
             mellomnavn,
             etternavn,
-        )
-            .filter(String::isNotBlank)
+        ).filter(String::isNotBlank)
             .joinToString(separator = " ")
 }

@@ -20,7 +20,9 @@ internal data class PersonNavnResultat(
 )
 
 @Serializable
-internal data class PersonNavnListe(val navn: List<PdlPersonNavn>)
+internal data class PersonNavnListe(
+    val navn: List<PdlPersonNavn>,
+)
 
 /** Tilsvarer graphql-spørringen hentFullPerson.graphql */
 @Serializable
@@ -37,7 +39,9 @@ internal data class FullPersonListe(
 )
 
 @Serializable
-internal data class PdlAdresseBeskyttelse(val gradering: String?)
+internal data class PdlAdresseBeskyttelse(
+    val gradering: String?,
+)
 
 @Serializable
 internal data class PdlGeografiskTilknytning(
@@ -46,14 +50,13 @@ internal data class PdlGeografiskTilknytning(
     val gtBydel: String?,
     val gtLand: String?,
 ) {
-    fun hentTilknytning(): String? {
-        return when (gtType) {
+    fun hentTilknytning(): String? =
+        when (gtType) {
             PdlGtType.KOMMUNE -> gtKommune
             PdlGtType.BYDEL -> gtBydel
             PdlGtType.UTLAND -> gtLand
             PdlGtType.UDEFINERT -> null
         }
-    }
 
     enum class PdlGtType { KOMMUNE, BYDEL, UTLAND, UDEFINERT }
 }
