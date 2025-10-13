@@ -28,23 +28,24 @@ object MockResponse {
 }
 
 fun mockPdlClient(vararg responses: Pair<HttpStatusCode, String>): PdlClient {
-    val mockEngine = MockEngine.create {
-        reuseHandlers = false
-        requestHandlers.addAll(
-            responses.map { (status, content) ->
-                {
-                    if (content == "timeout") {
-                        delay(10100)
+    val mockEngine =
+        MockEngine.create {
+            reuseHandlers = false
+            requestHandlers.addAll(
+                responses.map { (status, content) ->
+                    {
+                        if (content == "timeout") {
+                            delay(10100)
+                        }
+                        respond(
+                            content = content,
+                            status = status,
+                            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                        )
                     }
-                    respond(
-                        content = content,
-                        status = status,
-                        headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
-                    )
-                }
-            },
-        )
-    }
+                },
+            )
+        }
 
     val mockHttpClient = HttpClient(mockEngine) { configure() }
 
@@ -60,20 +61,23 @@ fun mockPdlClient(vararg responses: Pair<HttpStatusCode, String>): PdlClient {
 
 fun mockPdlException(): PdlException =
     PdlException(
-        errors = listOf(
-            PdlError(
-                message = "PDL kunne ikke finne Chuck Norris. Han finner deg.",
-                locations = listOf(
-                    PdlErrorLocation(
-                        line = null,
-                        column = null,
-                    ),
-                ),
-                path = null,
-                extensions = PdlErrorExtension(
-                    code = null,
-                    classification = "Tullefeil",
+        errors =
+            listOf(
+                PdlError(
+                    message = "PDL kunne ikke finne Chuck Norris. Han finner deg.",
+                    locations =
+                        listOf(
+                            PdlErrorLocation(
+                                line = null,
+                                column = null,
+                            ),
+                        ),
+                    path = null,
+                    extensions =
+                        PdlErrorExtension(
+                            code = null,
+                            classification = "Tullefeil",
+                        ),
                 ),
             ),
-        ),
     )
