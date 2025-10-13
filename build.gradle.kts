@@ -77,7 +77,3 @@ fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
         }
     }
 }
-
-tasks.register("printVersion") {
-    println(project.version)
-}
