@@ -53,7 +53,7 @@ fun mockPdlClient(vararg responses: Pair<HttpStatusCode, String>): PdlClient {
         every { createHttpClient() } returns mockHttpClient
         PdlClient(
             "url",
-            Behandlingsgrunnlag.INNTEKTSMELDING,
+            Behandlingsgrunnlag.SYKEPENGER,
             LocalCache.Config(entryDuration = Duration.ZERO, maxEntries = 1),
         ) { "fake token" }
     }
