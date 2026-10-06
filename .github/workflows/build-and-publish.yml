@@ -8,5 +8,7 @@ on:
 jobs:
   build-and-publish:
     uses: navikt/hag-workflows/.github/workflows/build-and-publish.yml@main
+    with:
+      java-version: 25
     permissions:
       packages: write
