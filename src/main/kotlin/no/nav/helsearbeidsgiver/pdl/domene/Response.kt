@@ -82,7 +82,7 @@ internal data class PdlPersonNavn(
 
 @Serializable
 internal data class Foedselsdato(
-    val foedselsdato: LocalDate,
+    val foedselsdato: LocalDate?,
 )
 
 @Serializable

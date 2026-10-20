@@ -71,7 +71,7 @@ class PdlClient(
             ?.hentPerson
             ?.let {
                 val navn = it.navn.firstOrNull()
-                val foedselsdato = it.foedselsdato.firstOrNull()
+                val foedselsdato = it.foedselsdato.firstNotNullOfOrNull { it.foedselsdato }
                 val diskresjonskode =
                     it.adressebeskyttelse
                         .firstOrNull()
@@ -87,7 +87,7 @@ class PdlClient(
                                 mellomnavn = navn.mellomnavn,
                                 etternavn = navn.etternavn,
                             ),
-                        foedselsdato = foedselsdato.foedselsdato,
+                        foedselsdato = foedselsdato,
                         diskresjonskode = diskresjonskode,
                         geografiskTilknytning = geografiskTilknytning,
                     )
@@ -107,19 +107,19 @@ class PdlClient(
             ?.mapNotNull {
                 if (it.code.equals("ok", ignoreCase = true)) {
                     val navn = it.person?.navn?.firstOrNull()
-                    val foedsel = it.person?.foedselsdato?.firstOrNull()
+                    val foedselsdato = it.person?.foedselsdato?.firstNotNullOfOrNull { it.foedselsdato }
                     val diskresjonskode =
                         it.person
                             ?.adressebeskyttelse
                             ?.firstOrNull()
                             ?.gradering
                             ?.tilKodeverkDiskresjonskode()
-                    if (navn == null || foedsel == null) {
+                    if (navn == null || foedselsdato == null) {
                         null
                     } else {
                         FullPerson(
                             navn = PersonNavn(navn.fornavn, navn.mellomnavn, navn.etternavn),
-                            foedselsdato = foedsel.foedselsdato,
+                            foedselsdato = foedselsdato,
                             ident = it.ident,
                             diskresjonskode = diskresjonskode,
                         )
