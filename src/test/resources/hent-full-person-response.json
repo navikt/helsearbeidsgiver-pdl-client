@@ -80,6 +80,9 @@
       ],
       "foedselsdato": [
         {
+          "foedselsdato": null
+        },
+        {
           "foedselsdato": "1984-01-31"
         }
       ],
